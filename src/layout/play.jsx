@@ -9,32 +9,35 @@ import QuizScene from "@/components/QuizScene";
 function PlayPage() {
   const [sceneIndex, setSceneIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false); // ✅ NEW
   const navigate = useNavigate();
 
   const current = scenes[sceneIndex];
 
-  // ✅ BACKEND URL (เปลี่ยนตอน deploy จริง)
-  const API_BASE = "https://cafe-api-hvv4.onrender.com"; // ← เปลี่ยนตรงนี้ตามจริง
+  // ✅ BACKEND URL
+  const API_BASE = "https://cafe-api-hvv4.onrender.com";
 
-  // ✅ ปลุก backend ล่วงหน้าเบา ๆ (ทำครั้งเดียวตอนเข้า)
+  // ✅ WARM-UP
   useEffect(() => {
     fetch(`${API_BASE}/health`)
       .then(() => console.log("✅ Backend warmed up"))
       .catch((err) => console.warn("⚠️ Backend warm-up failed:", err));
   }, []);
 
-  // ✅ เวลาผู้ใช้ตอบแต่ละข้อ
+  // ✅ เมื่อเลือกคำตอบใน Quiz
   const handleAnswer = (choiceId) => {
     const fullChoiceId = `${current.id}:${choiceId}`;
     setAnswers((prev) => [...prev, fullChoiceId]);
     nextScene();
   };
 
-  // ✅ ไปหน้าถัดไปหรือจบ → ส่งคะแนนไป backend
+  // ✅ ไปหน้าถัดไป / ส่งผลลัพธ์
   const nextScene = async () => {
     if (sceneIndex + 1 < scenes.length) {
       setSceneIndex((prev) => prev + 1);
     } else {
+      setIsSubmitting(true); // ✅ เริ่มโหลด
+
       try {
         const response = await fetch(`${API_BASE}/api/result`, {
           method: "POST",
@@ -44,8 +47,8 @@ function PlayPage() {
 
         if (!response.ok) {
           const text = await response.text();
-          console.error("❌ Server Error:", text);
           alert("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์: " + text);
+          setIsSubmitting(false); // ✅ ปลดล็อกปุ่ม
           return;
         }
 
@@ -53,8 +56,8 @@ function PlayPage() {
         localStorage.setItem("quizResult", JSON.stringify(resultData));
         navigate("/result");
       } catch (error) {
-        console.error("❌ Network Error:", error);
         alert("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้");
+        setIsSubmitting(false); // ✅ ปลดล็อกปุ่ม
       }
     }
   };
@@ -68,7 +71,11 @@ function PlayPage() {
         />
 
         {current.type === "story" && (
-          <StoryScene data={current} onNext={nextScene} />
+          <StoryScene
+            data={current}
+            onNext={nextScene}
+            isSubmitting={isSubmitting} // ✅ ส่ง prop นี้ไป
+          />
         )}
 
         {current.type === "quiz" && (

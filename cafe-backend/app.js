@@ -25,7 +25,7 @@ app.use("/api", resultRoutes);
 // ✅ OG SHARE สำหรับ Social
 app.get("/share/:type", (req, res) => {
   const { type } = req.params;
-  const base = "https://cafe-message.vercel.app"; // ✅ แก้ URL ให้ถูกแล้ว
+  const base = "https://cafe-message.vercel.app/"; // ✅ แก้ URL ให้ถูกแล้ว
 
   res.send(`
     <html>

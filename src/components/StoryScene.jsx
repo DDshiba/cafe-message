@@ -2,12 +2,22 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import AnimatedText from "@/components/AnimatedText";
 
-const StoryScene = ({ data, onNext }) => {
+const StoryScene = ({ data, onNext, isSubmitting }) => {
   const { id, title, content, image } = data;
+
+  // ✅ ตรวจสอบว่าเป็น story สุดท้าย
+  const isLastStory = id === "story_6";
+
+  // ✅ ตั้งข้อความปุ่มตามสถานะ
+  const buttonText = isLastStory
+    ? isSubmitting
+      ? "กรุณารอผลลัพธ์..."
+      : "เปิดข้อความ"
+    : "ถัดไป";
 
   return (
     <div className="flex flex-col flex-1">
-      {/* ✅ เนื้อหาอยู่กลางด้วย grow */}
+      {/* ✅ เนื้อหา */}
       <div className="flex flex-col items-center justify-center text-center flex-1">
         {image && (
           <img
@@ -32,8 +42,13 @@ const StoryScene = ({ data, onNext }) => {
 
       {/* ✅ ปุ่มล่าง */}
       <div className="flex justify-center">
-        <Button onClick={onNext} variant="default" size="lg">
-          {id === "story_6" ? "เปิดข้อความ" : "ถัดไป"}
+        <Button
+          onClick={onNext}
+          variant="default"
+          size="lg"
+          disabled={isSubmitting} // ✅ กันกดซ้ำระหว่างรอ
+        >
+          {buttonText}
         </Button>
       </div>
     </div>

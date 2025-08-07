@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import AnimatedImageGrid from "@/components/AnimatedImageGrid";
 import { useNavigate } from "react-router-dom";
@@ -8,13 +8,21 @@ function HomePage() {
   const navigate = useNavigate();
   const chimeRef = useRef(null);
   const [isClicked, setIsClicked] = useState(false);
-  const [bgImage, setBgImage] = useState("/images/bg_day.png"); // ✅ สลับภาพพื้นหลัง
+  const [bgImage, setBgImage] = useState("/images/bg_day.png");
+
+  const API_BASE = "https://cafe-api-hvv4.onrender.com"; // ✅ ใส่ URL backend
+
+  // ✅ เพิ่มส่วนนี้เพื่อปลุก backend ตอนโหลดหน้า Home
+  useEffect(() => {
+    fetch(`${API_BASE}/health`)
+      .then(() => console.log("✅ Backend warmed up from Home"))
+      .catch(() => console.warn("⚠️ Backend warm-up failed (Home)"));
+  }, []);
 
   const handleClick = () => {
     if (isClicked) return;
     setIsClicked(true);
 
-    // ✅ เปลี่ยนเป็นภาพกลางคืน
     setBgImage("/images/bg_night.png");
 
     if (chimeRef.current) {
@@ -24,13 +32,13 @@ function HomePage() {
 
     setTimeout(() => {
       navigate("/play");
-    }, 1500); // เพิ่มเวลานิดให้พื้นหลังเฟดก่อน
+    }, 1500);
   };
 
   return (
     <div
       className="w-full h-screen flex items-center justify-center bg-cover bg-center transition-all duration-1000"
-      style={{ backgroundImage: `url('${bgImage}')` }} // ✅ ใช้ bg จาก state
+      style={{ backgroundImage: `url('${bgImage}')` }}
     >
       <motion.div
         initial={{ opacity: 0, filter: "blur(8px)", scale: 1.05 }}
