@@ -4,23 +4,28 @@ import resultRoutes from "./routes/result.js";
 import rateLimit from "express-rate-limit";
 
 const app = express();
-app.use(cors());
+
+// ✅ เปิด CORS เฉพาะ frontend Vercel
+app.use(cors({
+  origin: "https://cafe-message.vercel.app",
+}));
+
 app.use(express.json());
 
+// ✅ จำกัด request เพื่อกันสแปม
 const resultLimiter = rateLimit({
-  windowMs: 60 * 1000,
+  windowMs: 60 * 1000, // 1 นาที
   max: 10,
   message: "⛔ Too many requests. Please try again later.",
 });
 
-// ✅ ใส่ limiter เฉพาะ route
 app.use("/api/result", resultLimiter);
 app.use("/api", resultRoutes);
 
-// ✅ 🆕 ADD THIS PART
+// ✅ OG SHARE สำหรับ Social
 app.get("/share/:type", (req, res) => {
   const { type } = req.params;
-  const base = "https://https://cafe-message.vercel.app"; // ← เปลี่ยนตรงนี้ถ้าขึ้น prod จริง
+  const base = "https://cafe-message.vercel.app"; // ✅ แก้ URL ให้ถูกแล้ว
 
   res.send(`
     <html>
@@ -36,7 +41,8 @@ app.get("/share/:type", (req, res) => {
     </html>
   `);
 });
-// ✅ WARM-UP ROUTE (เพิ่มตรงนี้)
+
+// ✅ ROUTE ปลุก backend ตอนเปิดเว็บ
 app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
