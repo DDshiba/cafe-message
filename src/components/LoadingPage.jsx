@@ -1,18 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import lottie from "lottie-web";
+import animationData from "../assets/loading.json"; // ✅ ไฟล์ json ที่โหลดมา
 import { scenes } from "../data/scenes";
 
 export default function LoadingPage() {
   const navigate = useNavigate();
   const [isReady, setIsReady] = useState(false);
+  const lottieRef = useRef();
 
   const images = scenes.map((s) => s.image).filter(Boolean);
 
   useEffect(() => {
+    // ✅ แสดง animation ด้วย lottie-web (มือถือรองรับแน่นอน)
+    lottie.loadAnimation({
+      container: lottieRef.current,
+      renderer: "svg",
+      loop: true,
+      autoplay: true,
+      animationData: animationData,
+    });
+  }, []);
+
+  useEffect(() => {
     let loaded = 0;
     const start = Date.now();
-    const MIN_DURATION = 1500; // ✅ อย่างน้อย 1.5 วิ
+    const MIN_DURATION = 1500;
 
     const finish = () => {
       const elapsed = Date.now() - start;
@@ -21,7 +34,7 @@ export default function LoadingPage() {
     };
 
     if (images.length === 0) {
-      finish(); // ✅ ยัง delay loading แน่ๆ
+      finish();
       return;
     }
 
@@ -31,7 +44,7 @@ export default function LoadingPage() {
       img.onload = img.onerror = () => {
         loaded++;
         if (loaded === images.length) {
-          finish(); // ✅ โหลดครบ → ค่อยเข้าเมื่อครบเวลา
+          finish();
         }
       };
     });
@@ -41,23 +54,17 @@ export default function LoadingPage() {
     if (isReady) {
       const timer = setTimeout(() => {
         navigate("/home");
-      }, 200); // delay นิดเดียวให้ลื่น
+      }, 200);
       return () => clearTimeout(timer);
     }
   }, [isReady, navigate]);
 
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center bg-white fixed top-0 left-0 z-[9999]">
-      <div className="w-[100px] h-[100px]">
-        <DotLottieReact
-          src="https://lottie.host/326752a1-2cdd-41d5-9af6-3d00222c707c/YkU1t2bYNh.lottie"
-          loop
-          autoplay
-          style={{ width: "100%", height: "100%" }}
-        />
-      </div>
+    <div className="fixed top-0 left-0 w-full h-screen z-[9999] bg-white flex flex-col items-center justify-center">
+      {/* ✅ ใช้ ref สำหรับ lottie-web */}
+      <div ref={lottieRef} className="w-[100px] h-[100px]" />
 
-      {/* ✅ preload images for cache */}
+      {/* ✅ preload รูป */}
       <div className="hidden">
         {images.map((src, idx) => (
           <img key={idx} src={src} alt="" loading="eager" />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const images = [
   "/images/cafe/_Book.png",
@@ -17,10 +17,15 @@ const transitionTime = 300;
 
 export default function AnimatedCafeShowcase() {
   const [index, setIndex] = useState(0);
+  const [show, setShow] = useState(true);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % images.length);
+      setShow(false); // ออกจากฉากก่อน
+      setTimeout(() => {
+        setIndex((prev) => (prev + 1) % images.length); // เปลี่ยนภาพ
+        setShow(true); // เข้าฉากใหม่
+      }, transitionTime); // ให้เวลาภาพเก่าหายก่อนเปลี่ยน
     }, durationVisible + transitionTime);
 
     return () => clearInterval(timer);
@@ -28,21 +33,23 @@ export default function AnimatedCafeShowcase() {
 
   return (
     <div className="w-[200px] h-[200px] mx-auto relative overflow-hidden">
-      {images.map((src, i) => (
-        <motion.img
-          key={i}
-          src={src}
-          alt={`cafe-${i}`}
-          className="w-full h-full object-contain absolute"
-          initial={false}
-          animate={{
-            opacity: i === index ? 1 : 0,
-            scale: i === index ? 1 : 0.9,
-            y: i === index ? 0 : 20,
-          }}
-          transition={{ duration: transitionTime / 1000 }}
-        />
-      ))}
+      <AnimatePresence mode="wait">
+        {show && (
+          <motion.img
+            key={images[index]} // ทำให้ framer สร้าง-ลบ img จริง ๆ
+            src={images[index]}
+            alt={`cafe-${index}`}
+            className="w-full h-full object-contain absolute"
+            initial={{ opacity: 0, scale: 0.6, y: 40 }}     // เข้าฉากแบบเด้งขึ้น
+            animate={{ opacity: 1, scale: 1, y: 0 }}         // อยู่ตรงกลาง
+            exit={{ opacity: 0, scale: 0.3, y: 70 }}         // หายลงไป
+            transition={{
+              duration: transitionTime / 1000,
+              ease: "easeOut",
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
