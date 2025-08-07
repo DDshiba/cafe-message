@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const images = [
   "/images/cafe/_Book.png",
@@ -12,44 +12,48 @@ const images = [
   "/images/cafe/Minimal_.png",
 ];
 
-const durationVisible = 1000;
-const transitionTime = 300;
+const durationVisible = 1200;
+const transitionTime = 400;
 
 export default function AnimatedCafeShowcase() {
   const [index, setIndex] = useState(0);
-  const [show, setShow] = useState(true);
+  const [prevIndex, setPrevIndex] = useState(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setShow(false); // ออกจากฉากก่อน
-      setTimeout(() => {
-        setIndex((prev) => (prev + 1) % images.length); // เปลี่ยนภาพ
-        setShow(true); // เข้าฉากใหม่
-      }, transitionTime); // ให้เวลาภาพเก่าหายก่อนเปลี่ยน
-    }, durationVisible + transitionTime);
+      setPrevIndex(index); // เก็บภาพก่อนหน้า
+      setIndex((prev) => (prev + 1) % images.length);
+    }, durationVisible);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [index]);
 
   return (
     <div className="w-[200px] h-[200px] mx-auto relative overflow-hidden">
-      <AnimatePresence mode="wait">
-        {show && (
+      {images.map((src, i) => {
+        const isCurrent = i === index;
+        const isPrev = i === prevIndex;
+
+        return (
           <motion.img
-            key={images[index]} // ทำให้ framer สร้าง-ลบ img จริง ๆ
-            src={images[index]}
-            alt={`cafe-${index}`}
+            key={src}
+            src={src}
+            alt={`cafe-${i}`}
             className="w-full h-full object-contain absolute"
-            initial={{ opacity: 0, scale: 0.6, y: 40 }}     // เข้าฉากแบบเด้งขึ้น
-            animate={{ opacity: 1, scale: 1, y: 0 }}         // อยู่ตรงกลาง
-            exit={{ opacity: 0, scale: 0.3, y: 70 }}         // หายลงไป
+            initial={false}
+            animate={{
+              opacity: isCurrent ? 1 : isPrev ? 0 : 0,
+              scale: isCurrent ? 1 : isPrev ? 0.5 : 0.5,
+              y: isCurrent ? 0 : isPrev ? 50 : 50,
+              zIndex: isCurrent ? 2 : isPrev ? 1 : 0,
+            }}
             transition={{
               duration: transitionTime / 1000,
               ease: "easeOut",
             }}
           />
-        )}
-      </AnimatePresence>
+        );
+      })}
     </div>
   );
 }
