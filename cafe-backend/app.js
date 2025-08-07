@@ -20,7 +20,7 @@ app.use("/api", resultRoutes);
 // ✅ 🆕 ADD THIS PART
 app.get("/share/:type", (req, res) => {
   const { type } = req.params;
-  const base = "https://yourdomain.com"; // ← เปลี่ยนตรงนี้ถ้าขึ้น prod จริง
+  const base = "https://https://cafe-message.vercel.app"; // ← เปลี่ยนตรงนี้ถ้าขึ้น prod จริง
 
   res.send(`
     <html>
@@ -36,7 +36,11 @@ app.get("/share/:type", (req, res) => {
     </html>
   `);
 });
+// ✅ WARM-UP ROUTE (เพิ่มตรงนี้)
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
 
 app.listen(3001, () => {
-  console.log("✅ Server running on http://localhost:3001");
+  console.log("✅ Server running on https://cafe-message.vercel.app");
 });

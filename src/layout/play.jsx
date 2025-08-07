@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { scenes } from "../data/scenes";
 
@@ -13,9 +13,19 @@ function PlayPage() {
 
   const current = scenes[sceneIndex];
 
+  // ✅ BACKEND URL (เปลี่ยนตอน deploy จริง)
+  const API_BASE = "https://cafe-api-hvv4.onrender.com"; // ← เปลี่ยนตรงนี้ตามจริง
+
+  // ✅ ปลุก backend ล่วงหน้าเบา ๆ (ทำครั้งเดียวตอนเข้า)
+  useEffect(() => {
+    fetch(`${API_BASE}/health`)
+      .then(() => console.log("✅ Backend warmed up"))
+      .catch((err) => console.warn("⚠️ Backend warm-up failed:", err));
+  }, []);
+
   // ✅ เวลาผู้ใช้ตอบแต่ละข้อ
   const handleAnswer = (choiceId) => {
-    const fullChoiceId = `${current.id}:${choiceId}`; // ✅ รวมเป็น "quiz_1:calm"
+    const fullChoiceId = `${current.id}:${choiceId}`;
     setAnswers((prev) => [...prev, fullChoiceId]);
     nextScene();
   };
@@ -26,7 +36,7 @@ function PlayPage() {
       setSceneIndex((prev) => prev + 1);
     } else {
       try {
-        const response = await fetch("http://localhost:3001/api/result", {
+        const response = await fetch(`${API_BASE}/api/result`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ answers }),
@@ -42,7 +52,6 @@ function PlayPage() {
         const resultData = await response.json();
         localStorage.setItem("quizResult", JSON.stringify(resultData));
         navigate("/result");
-
       } catch (error) {
         console.error("❌ Network Error:", error);
         alert("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้");
