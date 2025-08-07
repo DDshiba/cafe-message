@@ -12,41 +12,23 @@ app.use(cors({
 
 app.use(express.json());
 
-// ✅ จำกัด request เพื่อกันสแปม
+// ✅ จำกัด request เพื่อกันสแปม (เช่นส่งผลลัพธ์บ่อย)
 const resultLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 นาที
   max: 10,
   message: "⛔ Too many requests. Please try again later.",
 });
 
+// ✅ API routes
 app.use("/api/result", resultLimiter);
 app.use("/api", resultRoutes);
 
-// ✅ OG SHARE สำหรับ Social
-app.get("/share/:type", (req, res) => {
-  const { type } = req.params;
-  const base = "https://cafe-message.vercel.app/"; // ✅ แก้ URL ให้ถูกแล้ว
-
-  res.send(`
-    <html>
-      <head>
-        <meta property="og:title" content="Café Message - ${type} Café" />
-        <meta property="og:description" content="มาดูว่าคาเฟ่ประจำใจของคุณคืออะไร!" />
-        <meta property="og:image" content="${base}/images/result/${type}.png" />
-        <meta property="og:url" content="${base}/result/${type}" />
-        <meta property="og:type" content="website" />
-        <meta http-equiv="refresh" content="0;url=${base}/result/${type}" />
-      </head>
-      <body>Redirecting...</body>
-    </html>
-  `);
-});
-
-// ✅ ROUTE ปลุก backend ตอนเปิดเว็บ
+// ✅ ROUTE ปลุก backend ตอนเปิดเว็บ หรือ Health Check
 app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
 
+// ✅ Start server
 app.listen(3001, () => {
   console.log("✅ Server running on https://cafe-message.vercel.app");
 });

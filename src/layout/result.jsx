@@ -41,7 +41,7 @@ function ResultPage() {
             navigator.share?.({
               title: "Café Message",
               text: "มาดูว่าคาเฟ่ประจำใจคุณคืออะไร!",
-              url: `https://cafe-message.vercel.app/share/${type}`, // 👈 ลิงก์ใหม่ที่จะมี OG preview
+              url: `https://cafe-message.vercel.app`, // 👈 ลิงก์ใหม่ที่จะมี OG preview
             })
           }
         >
