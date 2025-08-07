@@ -1,5 +1,5 @@
-import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 const images = [
   "/images/cafe/_Book.png",
@@ -12,20 +12,15 @@ const images = [
   "/images/cafe/Minimal_.png",
 ];
 
-const durationVisible = 1000; // เวลาแสดงเต็ม
-const transitionTime = 300;   // เวลาเข้าหรือออก
+const durationVisible = 1000;
+const transitionTime = 300;
 
 export default function AnimatedCafeShowcase() {
   const [index, setIndex] = useState(0);
-  const [show, setShow] = useState(true);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setShow(false); // ออกก่อน
-      setTimeout(() => {
-        setIndex((prev) => (prev + 1) % images.length);
-        setShow(true); // เข้าใหม่
-      }, transitionTime);
+      setIndex((prev) => (prev + 1) % images.length);
     }, durationVisible + transitionTime);
 
     return () => clearInterval(timer);
@@ -33,23 +28,21 @@ export default function AnimatedCafeShowcase() {
 
   return (
     <div className="w-[200px] h-[200px] mx-auto relative overflow-hidden">
-      <AnimatePresence mode="wait">
-        {show && (
-          <motion.img
-            key={images[index]}
-            src={images[index]}
-            alt={`cafe-${index}`}
-            className="w-full h-full object-contain absolute"
-            initial={{ opacity: 0, scale: 0.6, y: 40 }}      // 🔽 มาเล็ก+ล่าง
-            animate={{ opacity: 1, scale: 1, y: 0 }}          // 🔼 โตขึ้น+ตรงกลาง
-            exit={{ opacity: 0.5, scale: 0.3, y: 70 }}          // 🔽 หายแบบย่อลงข้างล่าง
-            transition={{
-              duration: transitionTime / 1000,
-              ease: "easeOut",
-            }}
-          />
-        )}
-      </AnimatePresence>
+      {images.map((src, i) => (
+        <motion.img
+          key={i}
+          src={src}
+          alt={`cafe-${i}`}
+          className="w-full h-full object-contain absolute"
+          initial={false}
+          animate={{
+            opacity: i === index ? 1 : 0,
+            scale: i === index ? 1 : 0.9,
+            y: i === index ? 0 : 20,
+          }}
+          transition={{ duration: transitionTime / 1000 }}
+        />
+      ))}
     </div>
   );
 }

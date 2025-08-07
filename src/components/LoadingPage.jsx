@@ -11,9 +11,17 @@ export default function LoadingPage() {
 
   useEffect(() => {
     let loaded = 0;
+    const start = Date.now();
+    const MIN_DURATION = 1500; // ✅ อย่างน้อย 1.5 วิ
+
+    const finish = () => {
+      const elapsed = Date.now() - start;
+      const wait = Math.max(MIN_DURATION - elapsed, 0);
+      setTimeout(() => setIsReady(true), wait);
+    };
 
     if (images.length === 0) {
-      setIsReady(true);
+      finish(); // ✅ ยัง delay loading แน่ๆ
       return;
     }
 
@@ -23,7 +31,7 @@ export default function LoadingPage() {
       img.onload = img.onerror = () => {
         loaded++;
         if (loaded === images.length) {
-          setIsReady(true);
+          finish(); // ✅ โหลดครบ → ค่อยเข้าเมื่อครบเวลา
         }
       };
     });
@@ -33,13 +41,13 @@ export default function LoadingPage() {
     if (isReady) {
       const timer = setTimeout(() => {
         navigate("/home");
-      }, 1500);
+      }, 200); // delay นิดเดียวให้ลื่น
       return () => clearTimeout(timer);
     }
   }, [isReady, navigate]);
 
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center bg-white">
+    <div className="w-full h-screen flex flex-col items-center justify-center bg-white fixed top-0 left-0 z-[9999]">
       <div className="w-[100px] h-[100px]">
         <DotLottieReact
           src="https://lottie.host/326752a1-2cdd-41d5-9af6-3d00222c707c/YkU1t2bYNh.lottie"
@@ -49,7 +57,7 @@ export default function LoadingPage() {
         />
       </div>
 
-      {/* ✅ preload images in DOM (force browser cache) */}
+      {/* ✅ preload images for cache */}
       <div className="hidden">
         {images.map((src, idx) => (
           <img key={idx} src={src} alt="" loading="eager" />
