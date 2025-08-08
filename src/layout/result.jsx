@@ -1,11 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Share, RefreshCcw } from "lucide-react";
+import { Share, RefreshCcw, Download } from "lucide-react";
 import { useEffect, useState } from "react";
 
 function ResultPage() {
   const navigate = useNavigate();
-
   const [type, setType] = useState(null);
 
   useEffect(() => {
@@ -20,6 +19,19 @@ function ResultPage() {
     return <div className="text-center mt-10 text-gray-500">ไม่พบผลลัพธ์</div>;
   }
 
+  const handleDownload = async () => {
+    const res = await fetch(`/images/result/${type}.png`);
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${type}.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="w-[390px] mx-auto min-h-screen flex flex-col justify-center pb-9 pt-11 px-4 bg-white gap-6">
       {/* ✅ ภาพผลลัพธ์ */}
@@ -31,10 +43,23 @@ function ResultPage() {
         />
       </div>
 
-      {/* ✅ ปุ่มแชร์ / เล่นอีกครั้ง */}
+      {/* ✅ ปุ่มบันทึกรูป (ยาวเท่ากับปุ่มแชร์/เล่นอีกครั้ง) */}
       <div className="flex gap-4 justify-center w-full">
         <Button
           variant="default"
+          className="flex-1 flex gap-3 items-center justify-center px-4 py-3"
+          size="lg"
+          onClick={handleDownload}
+        >
+          <Download className="w-4 h-4" />
+          บันทึกรูป
+        </Button>
+      </div>
+
+      {/* ✅ ปุ่มแชร์ / เล่นอีกครั้ง */}
+      <div className="flex gap-4 justify-center w-full">
+        <Button
+          variant="secondary"
           className="flex-1 flex gap-3 items-center justify-center px-4 py-3"
           size="lg"
           onClick={() =>
@@ -50,7 +75,7 @@ function ResultPage() {
         </Button>
 
         <Button
-          variant="default"
+          variant="secondary"
           size="lg"
           className="flex-1 flex gap-3 items-center justify-center px-4 py-3"
           onClick={() => navigate("/home")}
@@ -59,6 +84,7 @@ function ResultPage() {
           เล่นอีกครั้ง
         </Button>
       </div>
+
       {/* ✅ โลโก้ขนาดเล็ก */}
       <div className="w-[88px] h-[40px] mx-auto">
         <img
