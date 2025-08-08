@@ -46,7 +46,7 @@ function ResultPage() {
           }
         >
           <Share className="w-4 h-4" />
-          แชร์ผลลัพธ์
+          แชร์ลิ้งค์
         </Button>
 
         <Button
