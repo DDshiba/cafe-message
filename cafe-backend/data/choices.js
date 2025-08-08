@@ -41,7 +41,7 @@ export const choiceScores = {
 
   // ✅ Quiz 7
   "quiz_7:4bf78451-b2c8-4e8d-af6f-f4c91045f061": { Book: 3.0, Minimal: 1.0,Nature: 2.0 },
-  "quiz_7:82aa687d-f2ce-4c23-b5db-bb5cf2c51012": { Nature: 3.0, Loft: 1.1 },
+  "quiz_7:82aa687d-f2ce-4c23-b5db-bb5cf2c51012": { Nature: 2.0, Loft: 1.1 },
   "quiz_7:a6c314d9-ce36-423c-b2fd-72f1911bbdd4": { Creative: 3.0, Cute: 1.0 },
   "quiz_7:bd660740-3ffc-40c9-8bbb-ba6f0f114e23": { Cute: 1.0, Pet: 3.1, Vintage: 1.2 },
 
