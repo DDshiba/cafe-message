@@ -3,7 +3,7 @@ export const scenes = [
   {
     id: "story_1",
     type: "story",
-    image: "/images/story_1.png",
+    image: "/images/story_1.jpg",
     content: `
 ท่ามกลางความเงียบงันและไอเย็น
 คุณลืมตาขึ้น... บนพื้นหญ้าเปียกชื้น
@@ -74,7 +74,7 @@ export const scenes = [
   {
     id: "story_3",
     type: "story",
-    image: "/images/story_3.png",
+    image: "/images/story_3.jpg",
     content: `
 ระหว่างเดินทางตามเสียงนั้น
 เห็นเงาบ้างอย่าง จึงก้าวเข้าไปใกล้
@@ -114,7 +114,7 @@ export const scenes = [
   {
     id: "quiz_5",
     type: "quiz",
-    image: "/images/quiz_5.png",
+    image: "/images/quiz_5.jpg",
     title: "“หากเปิดบานนี้... คุณจะต้องทิ้งสิ่งหนึ่งไว้ข้างหลัง”",
     content: `สิ่งใดที่คุณพร้อมจะวางไว้ข้างหลัง?`,
     choices: [
@@ -189,7 +189,7 @@ export const scenes = [
   {
     id: "story_5",
     type: "story",
-    image: "/images/story_5.png",
+    image: "/images/story_5.jpg",
     content: `
 แสงอ่อน ๆ ส่องผ่านเปลือกตา
 เสียงเพลงจางลง เหลือแค่นาฬิกาปลุก
@@ -218,7 +218,7 @@ export const scenes = [
   {
     id: "story_6",
     type: "story",
-    image: "/images/story_6.png",
+    image: "/images/story_6.jpg",
     content: `
 จู่ ๆ เสียงแจ้งเตือนก็ดังขึ้นจากโทรศัพท์ข้างหมอน
 หน้าจอสว่างขึ้น พร้อมข้อความหนึ่ง:
