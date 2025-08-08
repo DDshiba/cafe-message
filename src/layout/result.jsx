@@ -32,16 +32,16 @@ function ResultPage() {
       </div>
 
       {/* ✅ ปุ่มแชร์ / เล่นอีกครั้ง */}
-      <div className="flex gap-4 justify-center">
+      <div className="flex gap-4 justify-center w-full">
         <Button
           variant="default"
-          className="flex gap-3 items-center px-4 py-2"
+          className="flex-1 flex gap-3 items-center justify-center px-4 py-3"
           size="lg"
           onClick={() =>
             navigator.share?.({
               title: "Café Message",
               text: "มาดูว่าคาเฟ่ประจำใจคุณคืออะไร!",
-              url: `https://cafe-message.vercel.app`, // 👈 ลิงก์ใหม่ที่จะมี OG preview
+              url: `https://cafe-message.vercel.app`,
             })
           }
         >
@@ -52,7 +52,7 @@ function ResultPage() {
         <Button
           variant="default"
           size="lg"
-          className="flex gap-3 items-center px-4 py-2"
+          className="flex-1 flex gap-3 items-center justify-center px-4 py-3"
           onClick={() => navigate("/home")}
         >
           <RefreshCcw className="w-4 h-4" />
